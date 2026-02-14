@@ -4,6 +4,7 @@ void keyPressed() {
   if (key == 's' || key == 'S')  keyInputs.put("down", true);
   if (key == 'd' || key == 'D')  keyInputs.put("right", true);
   if (keyCode == TAB) keyInputs.put("currTabState", true);
+  if (key == ' ') keyInputs.put("space", true);
 }
 
 void keyReleased() {
@@ -12,4 +13,5 @@ void keyReleased() {
   if (key == 's' || key == 'S')  keyInputs.put("down", false);
   if (key == 'd' || key == 'D')  keyInputs.put("right", false);
   if (keyCode == TAB) keyInputs.put("currTabState", false);
+  if (key == ' ') keyInputs.put("space", false);
 }

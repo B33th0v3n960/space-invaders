@@ -1,5 +1,5 @@
 public class SceneTwo implements Scene {
-    Player player = new Player(width/2, height - 100);
+    Player player = new Player(width/2, height - 100, null);
 
     public SceneTwo() {
         player.chageState();

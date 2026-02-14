@@ -63,6 +63,14 @@ class Sprite {
     return y;
   }
 
+  public float getWidth() {
+    return spriteWidth;
+  }
+
+  public float getHeight() {
+    return spriteHeight;
+  }
+
   public void drawHitBox() {
     collisionBody.showCollisionBody();
   }
