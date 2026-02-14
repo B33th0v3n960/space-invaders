@@ -25,7 +25,13 @@ public class AlienOne extends Alien {
     private ArrayList<Bomb> bombs;
     public AlienOne(float x, float y, ArrayList<Bomb> bombs) {
         super(x, y);
-        this.bombs = bombs;
+        try {
+            if (bombs == null) 
+                throw new NullPointerException();
+            this.bombs = bombs;
+        } catch (NullPointerException exception) {
+            exception.printStackTrace();
+        }
 
         String assets[][] = {
             {
@@ -47,13 +53,22 @@ public class AlienOne extends Alien {
 }
 
 public class AlienTwo extends Alien {
-    public AlienTwo(float x, float y) {
+    private ArrayList<Bullet> bullets;
+    public AlienTwo(float x, float y, ArrayList<Bullet> bullets) {
         super(x, y);
+        try {
+            if (bullets == null) 
+                throw new NullPointerException();
+            this.bullets = bullets;
+        } catch (NullPointerException exception) {
+            exception.printStackTrace();
+        }
+
 
         String assets[][] = {
             {
-                "./assets/Aliens/Alien1.png",
-                "./assets/Aliens/Alien2.png",
+                "./assets/Aliens/Alien3.png",
+                "./assets/Aliens/Alien4.png",
             }
         };
         loadFrames(assets);
@@ -61,7 +76,10 @@ public class AlienTwo extends Alien {
 
     @Override 
     public void attack() {
-        if (frameCount == 0)
-            System.out.println(this + " is attacking");
+        if (frameCount % 30 == 0) {
+            Bullet bullet = new Bullet(x, y);
+            bullet.setVelocity(0, 10);
+            bullets.add(bullet);
+        }
     }
 }

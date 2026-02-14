@@ -64,8 +64,4 @@ class Bomb extends Sprite {
   public boolean checkDeleted() {
     return isDeleted;
   }
-
-  public float getExplosionRadius() {
-    return spriteWidth/2;
-  }
 }
