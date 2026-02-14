@@ -1,9 +1,17 @@
 class Player extends Sprite {
   private int health = 5;
   private int iframe = 0;
+  private ArrayList<Heart> hearts;
 
-  public Player(float x, float y) {
+  public Player(float x, float y, ArrayList<Heart> hearts) {
     super(x, y, 100, 100, RECT);
+    try {
+      if (hearts== null) 
+        throw new NullPointerException();
+      this.hearts = hearts;
+    } catch (NullPointerException exception) {
+      exception.printStackTrace();
+    }
 
     String assets[][] = {
       {
@@ -55,6 +63,11 @@ class Player extends Sprite {
     if (iframe <= 0) {
       health -= 1;
       iframe = 50;
+      hearts.remove(hearts.size() - 1);
     }
+  }
+
+  public int getHealth() {
+    return health;
   }
 }

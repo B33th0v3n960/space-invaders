@@ -23,6 +23,7 @@ void setup() {
   keyInputs.put("right", false);
   keyInputs.put("currTabState", false);
   keyInputs.put("prevTabState", false);
+  keyInputs.put("space", false);
 
   currentScene = new SceneOne();
 }

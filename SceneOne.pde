@@ -3,13 +3,18 @@ class SceneOne implements Scene {
     private Alien[][] enemy;
     private ArrayList<Bomb> bombs = new ArrayList<>();
     private ArrayList<Bullet> bullets = new ArrayList<>();
+    private ArrayList<Heart> hearts = new ArrayList<>();
     private int alienDirection = 1;
     private float alienSpeed = 5;
     private float alienLeftBound;
     private float alienRightBound;
 
     public SceneOne() {
-        player = new Player(width/2, height - 100);
+        player = new Player(width/2, height - 100, hearts);
+        for (int heartIndex = 0; heartIndex < player.getHealth(); heartIndex++) {
+            hearts.add(new Heart(75 * heartIndex + 50, 50));
+        }
+
         enemy = new Alien[4][5];
         for (int row = 0; row < enemy.length; row++) {
             for (int col = 0; col < enemy[row].length; col++) {
@@ -24,6 +29,9 @@ class SceneOne implements Scene {
     }
 
     public void update() {
+        if (player.getHealth() <= 0) 
+            return;
+
         if (keyPressed) {
             if (keyInputs.get("left"))
                 player.move(-5, 0);
@@ -65,7 +73,7 @@ class SceneOne implements Scene {
             Bullet bullet = bullets.get(bulletIndex);
             bullet.move();
 
-            if (player.collidesWith(bullet)) 
+            if (player.collidesWith(bullet))
                 player.takeDamge();
 
             if (bullet.getY() > height + 200) 
@@ -75,17 +83,58 @@ class SceneOne implements Scene {
     
     public void draw() {
         player.draw();
+
         for (int row = 0; row < enemy.length; row++) {
             for (int col = 0; col < enemy[row].length; col++) 
                 enemy[row][col].draw();
         }
 
-        for (Bomb bomb: bombs) {
+        for (Bomb bomb: bombs)
             bomb.draw();
+        for (Bullet bullet: bullets)
+            bullet.draw();
+        for (Heart heart: hearts)
+            heart.draw();
+        
+        if (player.getHealth() <= 0) {
+            gameOverMenu();
+        }
+    }
+
+    private void gameOverMenu() {
+        fill(#e5e9f0);
+        rect(width/2 , height/2, 720, 480, 20);
+        textAlign(CENTER);
+        textSize(48);
+        fill(#2e3440);
+        text("Game Over", width/2, height/2 - 100);
+        text("Presss <SPACE> to play again.", width/2, height/2 + 100);
+
+        if (keyPressed) {
+            if (keyInputs.get("space"))
+                resetGame();
+        }
+    }
+
+    private void resetGame() {
+        hearts = new ArrayList<>();
+        bombs = new ArrayList<>();
+        bullets = new ArrayList<>();
+        player = new Player(width/2, height - 100, hearts);
+        for (int heartIndex = 0; heartIndex < player.getHealth(); heartIndex++) {
+            hearts.add(new Heart(75 * heartIndex + 50, 50));
         }
 
-        for (Bullet bullet: bullets) {
-            bullet.draw();
+        enemy = new Alien[4][5];
+        for (int row = 0; row < enemy.length; row++) {
+            for (int col = 0; col < enemy[row].length; col++) {
+                float xCoordinate = width/2 - 500 + col * 200;
+                float yCoordinate = 100 + row * 200;
+                if (random(1,100) > 50)
+                    enemy[row][col] = new AlienOne(xCoordinate, yCoordinate, bombs);
+                else 
+                    enemy[row][col] = new AlienTwo(xCoordinate, yCoordinate, bullets);
+            } 
         }
     }
 }
