@@ -27,8 +27,11 @@ class SceneOne implements Scene {
         }
 
         if (mousePressed) {
-            if (keyInputs.get("currLeftClick") && !keyInputs.get("prevLeftClick"))
+            if (keyInputs.get("currLeftClick")) {
+                if (!keyInputs.get("prevLeftClick"))
+                    player.startAttack();
                 player.attack();
+            }
         }
 
         alienLeftBound = alienRightBound = width / 2;
@@ -94,8 +97,10 @@ class SceneOne implements Scene {
             Laser laser = lasers.get(laserIndex);
             laser.move();
 
-            if (laser.getY() < -100) 
+            if (laser.getY() < -100) {
+                player.increaseScore(-1);
                 lasers.remove(laserIndex);
+            }
         }
 
         for (int explosionIndex = 0; explosionIndex < explosions.size(); explosionIndex++) {

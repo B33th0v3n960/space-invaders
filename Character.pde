@@ -2,6 +2,8 @@ class Player extends Sprite {
   private int health = 10;
   private int score = 0;
   private int iframe = 0;
+  private int ammunition = 10;
+  private int attackCounter = 0;
   private ArrayList<Heart> hearts;
   private ArrayList<Laser> lasers;
 
@@ -45,6 +47,8 @@ class Player extends Sprite {
 
   @Override
   public void draw() {
+    if (frameCount % 50 == 0 && ammunition < 5)
+      ammunition++;
     if (animationFrames != null && animationState < animationFrames.length && animationFrameIndex < animationFrames[0].length) {
       if (iframe > 0) {
         if (frameCount % 10 == 0)
@@ -62,10 +66,17 @@ class Player extends Sprite {
     }
   }
 
+  public void startAttack() {
+    attackCounter = 0;
+  }
+
   public void attack() {
+    if (ammunition > 0 && attackCounter++ % 10 == 0) {
       Laser laser = new Laser(x, y - 100);
       laser.setVelocity(0, -20);
       lasers.add(laser);
+      ammunition--;
+    }
   }
 
   public void takeDamge() {
