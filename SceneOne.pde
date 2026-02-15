@@ -1,31 +1,16 @@
 class SceneOne implements Scene {
     private Player player;
     private Alien[][] enemy;
-    private ArrayList<Bomb> bombs = new ArrayList<>();
-    private ArrayList<Bullet> bullets = new ArrayList<>();
-    private ArrayList<Heart> hearts = new ArrayList<>();
+    private ArrayList<Bomb> bombs;
+    private ArrayList<Bullet> bullets;
+    private ArrayList<Heart> hearts;
     private int alienDirection = 1;
     private float alienSpeed = 5;
     private float alienLeftBound;
     private float alienRightBound;
 
     public SceneOne() {
-        player = new Player(width/2, height - 100, hearts);
-        for (int heartIndex = 0; heartIndex < player.getHealth(); heartIndex++) {
-            hearts.add(new Heart(75 * heartIndex + 50, 50));
-        }
-
-        enemy = new Alien[4][5];
-        for (int row = 0; row < enemy.length; row++) {
-            for (int col = 0; col < enemy[row].length; col++) {
-                float xCoordinate = width/2 - 500 + col * 200;
-                float yCoordinate = 100 + row * 200;
-                if (random(1,100) > 50)
-                    enemy[row][col] = new AlienOne(xCoordinate, yCoordinate, bombs);
-                else 
-                    enemy[row][col] = new AlienTwo(xCoordinate, yCoordinate, bullets);
-            } 
-        }
+        resetGame();
     }
 
     public void update() {
@@ -63,7 +48,7 @@ class SceneOne implements Scene {
                 bomb.trigger();
             
             if (bomb.isExploding && player.collidesWith(bomb))
-                player.takeDamge();
+                player.takeDoubleDamage();
 
             if (bomb.getY() > height + 200 || bomb.checkDeleted())
                 bombs.remove(bombIndex);
@@ -79,6 +64,9 @@ class SceneOne implements Scene {
             if (bullet.getY() > height + 200) 
                 bullets.remove(bulletIndex);
         }
+
+        if (hearts.get(hearts.size() - 1).checkDelete())
+            hearts.remove(hearts.size() - 1);
     }
     
     public void draw() {
@@ -121,7 +109,7 @@ class SceneOne implements Scene {
         bombs = new ArrayList<>();
         bullets = new ArrayList<>();
         player = new Player(width/2, height - 100, hearts);
-        for (int heartIndex = 0; heartIndex < player.getHealth(); heartIndex++) {
+        for (int heartIndex = 0; heartIndex < player.getHealth()/2; heartIndex++) {
             hearts.add(new Heart(75 * heartIndex + 50, 50));
         }
 

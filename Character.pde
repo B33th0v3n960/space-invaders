@@ -1,5 +1,5 @@
 class Player extends Sprite {
-  private int health = 5;
+  private int health = 10;
   private int iframe = 0;
   private ArrayList<Heart> hearts;
 
@@ -63,7 +63,20 @@ class Player extends Sprite {
     if (iframe <= 0) {
       health -= 1;
       iframe = 50;
-      hearts.remove(hearts.size() - 1);
+      hearts.get(hearts.size() - 1).takeDamge();
+    }
+  }
+
+  public void takeDoubleDamage() {
+    if (iframe <= 0) {
+      health -= 2;
+      iframe = 50;
+      if (hearts.get(hearts.size() -1).checkHalfHeart() && hearts.size() > 2) {
+          hearts.get(hearts.size() -1).takeDamge();
+          hearts.get(hearts.size() -2).takeDamge();
+      } else {
+        hearts.get(hearts.size() - 1).takeDoubleDamage();
+      }
     }
   }
 
