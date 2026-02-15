@@ -5,6 +5,7 @@ class SceneOne implements Scene {
     private ArrayList<Bullet> bullets;
     private ArrayList<Heart> hearts;
     private ArrayList<Laser> lasers;
+    private ArrayList<Explosion> explosions;
     private int alienDirection = 1;
     private float alienSpeed = 5;
     private float alienLeftBound;
@@ -38,6 +39,7 @@ class SceneOne implements Scene {
                     continue;
                 } 
                 if (alien.checkDelete()) {
+                    explosions.add(new Explosion(alien.getX(), alien.getY()));
                     enemy[row][col] = null;
                     continue;
                 }
@@ -46,6 +48,7 @@ class SceneOne implements Scene {
                     Laser laser = lasers.get(laserIndex);
                     if (alien.collidesWith(laser)) {
                         alien.takeDamge();
+                        player.increaseScore(5);
                         lasers.remove(laserIndex);
                     }
                 }
@@ -95,6 +98,12 @@ class SceneOne implements Scene {
                 lasers.remove(laserIndex);
         }
 
+        for (int explosionIndex = 0; explosionIndex < explosions.size(); explosionIndex++) {
+            Explosion explosion = explosions.get(explosionIndex);
+            if (explosion.checkDeleted())
+                explosions.remove(explosionIndex);
+        }
+
         if (hearts.get(hearts.size() - 1).checkDelete())
             hearts.remove(hearts.size() - 1);
     }
@@ -117,10 +126,16 @@ class SceneOne implements Scene {
             heart.draw();
         for (Laser laser: lasers) 
             laser.draw();
+        for (Explosion explosion: explosions)
+            explosion.draw();
         
         if (player.getHealth() <= 0) {
             gameOverMenu();
         }
+
+        fill(#d8dee9);
+        textAlign(RIGHT, TOP);
+        text("Player Score: " + player.getScore(), width - 20, 20);
     }
 
     private void gameOverMenu() {
@@ -143,6 +158,7 @@ class SceneOne implements Scene {
         bombs = new ArrayList<>();
         bullets = new ArrayList<>();
         lasers = new ArrayList<>();
+        explosions = new ArrayList<>();
         player = new Player(width/2, height - 100, hearts, lasers);
         for (int heartIndex = 0; heartIndex < player.getHealth()/2; heartIndex++) {
             hearts.add(new Heart(75 * heartIndex + 50, 50));

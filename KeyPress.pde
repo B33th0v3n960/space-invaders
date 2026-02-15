@@ -19,7 +19,6 @@ void keyReleased() {
 }
 
 void mousePressed() {
-  System.out.println("Mouse Pressed");
   keyInputs.put("currLeftClick", true);
 }
 

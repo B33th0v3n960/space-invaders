@@ -23,9 +23,9 @@ class Explosion {
             animationFrames[frame] = loadImage(assets[frame]);
     }
 
-    public void expolode() {
+    public void draw() {
         counter++;
-        if (counter % 10 == 0 && frame < 5) {
+        if (counter % 5 == 0 && frame < 5) {
             frame++;
             animationFrames[frame].resize(100, 100);
         } 

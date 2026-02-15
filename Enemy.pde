@@ -2,6 +2,7 @@ abstract class Alien extends Sprite {
     protected boolean delete = false;
     protected boolean isDying = false;
     protected int damageFlicker;
+    protected int health;
 
     public Alien(float x, float y) {
         super(x, y, 100, 100, RECT);
@@ -10,9 +11,10 @@ abstract class Alien extends Sprite {
     @Override
     public void draw() {
         if (damageFlicker > 0 && frameCount % 10 == 0) {
+            damageFlicker--;
             animationFrameIndex = (++animationFrameIndex) % animationFrames[0].length;
-            delete = (--damageFlicker == 0);
         }
+        animationFrameIndex = (damageFlicker <= 0)? 0: animationFrameIndex;
 
         if (animationFrames != null && animationState < animationFrames.length && animationFrameIndex < animationFrames[0].length) {
         pushMatrix();
@@ -27,6 +29,8 @@ abstract class Alien extends Sprite {
 
     public void takeDamge() {
         damageFlicker = 5;
+        if (--health == 0) 
+            delete = true;
     }
 
     public boolean checkIsDying() {
@@ -42,6 +46,7 @@ public class AlienOne extends Alien {
     private ArrayList<Bomb> bombs;
     public AlienOne(float x, float y, ArrayList<Bomb> bombs) {
         super(x, y);
+        this.health = 5;
         try {
             if (bombs == null) 
                 throw new NullPointerException();
@@ -61,7 +66,7 @@ public class AlienOne extends Alien {
 
     @Override 
     public void attack() {
-        if (frameCount % 30 == 0) {
+        if (frameCount % 30 == 0 && damageFlicker == 0) {
             Bomb bomb = new Bomb(x, y);
             bomb.setVelocity(0, 5);
             bombs.add(bomb);
@@ -73,6 +78,7 @@ public class AlienTwo extends Alien {
     private ArrayList<Bullet> bullets;
     public AlienTwo(float x, float y, ArrayList<Bullet> bullets) {
         super(x, y);
+        this.health = 5;
         try {
             if (bullets == null) 
                 throw new NullPointerException();
@@ -93,7 +99,7 @@ public class AlienTwo extends Alien {
 
     @Override 
     public void attack() {
-        if (frameCount % 30 == 0) {
+        if (frameCount % 30 == 0 && damageFlicker == 0) {
             Bullet bullet = new Bullet(x, y);
             bullet.setVelocity(0, 10);
             bullets.add(bullet);

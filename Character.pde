@@ -1,5 +1,6 @@
 class Player extends Sprite {
   private int health = 10;
+  private int score = 0;
   private int iframe = 0;
   private ArrayList<Heart> hearts;
   private ArrayList<Laser> lasers;
@@ -64,7 +65,6 @@ class Player extends Sprite {
   public void attack() {
       Laser laser = new Laser(x, y - 100);
       laser.setVelocity(0, -20);
-      System.out.println("Attack: " + laser);
       lasers.add(laser);
   }
 
@@ -91,5 +91,13 @@ class Player extends Sprite {
 
   public int getHealth() {
     return health;
+  }
+
+  public void increaseScore(int increment) {
+    score += increment;
+  }
+
+  public int getScore() {
+    return score;
   }
 }
