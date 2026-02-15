@@ -2,12 +2,14 @@ class Player extends Sprite {
   private int health = 10;
   private int iframe = 0;
   private ArrayList<Heart> hearts;
+  private ArrayList<Laser> lasers;
 
-  public Player(float x, float y, ArrayList<Heart> hearts) {
+  public Player(float x, float y, ArrayList<Heart> hearts, ArrayList<Laser> lasers) {
     super(x, y, 100, 100, RECT);
     try {
-      if (hearts== null) 
+      if (hearts == null || lasers == null) 
         throw new NullPointerException();
+      this.lasers = lasers;
       this.hearts = hearts;
     } catch (NullPointerException exception) {
       exception.printStackTrace();
@@ -57,6 +59,13 @@ class Player extends Sprite {
       image(animationFrames[animationState][animationFrameIndex], 0, 0);
       popMatrix();
     }
+  }
+
+  public void attack() {
+      Laser laser = new Laser(x, y - 100);
+      laser.setVelocity(0, -20);
+      System.out.println("Attack: " + laser);
+      lasers.add(laser);
   }
 
   public void takeDamge() {

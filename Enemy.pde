@@ -1,15 +1,32 @@
 abstract class Alien extends Sprite {
     protected boolean delete = false;
     protected boolean isDying = false;
+    protected int damageFlicker;
 
     public Alien(float x, float y) {
         super(x, y, 100, 100, RECT);
     }
 
+    @Override
+    public void draw() {
+        if (damageFlicker > 0 && frameCount % 10 == 0) {
+            animationFrameIndex = (++animationFrameIndex) % animationFrames[0].length;
+            delete = (--damageFlicker == 0);
+        }
+
+        if (animationFrames != null && animationState < animationFrames.length && animationFrameIndex < animationFrames[0].length) {
+        pushMatrix();
+        translate(x,y);
+        animationFrames[animationState][animationFrameIndex].resize((int) spriteWidth, (int) spriteWidth);
+        image(animationFrames[animationState][animationFrameIndex], 0, 0);
+        popMatrix();
+        }
+    }
+
     abstract void attack();
 
-    public void die() {
-        isDying = true;
+    public void takeDamge() {
+        damageFlicker = 5;
     }
 
     public boolean checkIsDying() {

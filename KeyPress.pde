@@ -17,3 +17,12 @@ void keyReleased() {
   if (keyCode == TAB) keyInputs.put("currTabState", false);
   if (key == ' ') keyInputs.put("space", false);
 }
+
+void mousePressed() {
+  System.out.println("Mouse Pressed");
+  keyInputs.put("currLeftClick", true);
+}
+
+void mouseReleased() {
+  keyInputs.put("currLeftClick", false);
+}

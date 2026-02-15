@@ -24,6 +24,8 @@ void setup() {
   keyInputs.put("currTabState", false);
   keyInputs.put("prevTabState", false);
   keyInputs.put("space", false);
+  keyInputs.put("currLeftClick", false);
+  keyInputs.put("prevLeftClick", false);
 
   currentScene = new SceneOne();
 }
@@ -47,8 +49,10 @@ void draw() {
         break;
     }
   }
-  keyInputs.put("prevTabState", keyInputs.get("currTabState"));
 
   currentScene.update();
   currentScene.draw();
+
+  keyInputs.put("prevTabState", keyInputs.get("currTabState"));
+  keyInputs.put("prevLeftClick", keyInputs.get("currLeftClick"));
 }

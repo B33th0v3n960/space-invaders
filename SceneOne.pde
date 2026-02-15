@@ -4,6 +4,7 @@ class SceneOne implements Scene {
     private ArrayList<Bomb> bombs;
     private ArrayList<Bullet> bullets;
     private ArrayList<Heart> hearts;
+    private ArrayList<Laser> lasers;
     private int alienDirection = 1;
     private float alienSpeed = 5;
     private float alienLeftBound;
@@ -24,10 +25,31 @@ class SceneOne implements Scene {
                 player.move(5,0);
         }
 
+        if (mousePressed) {
+            if (keyInputs.get("currLeftClick") && !keyInputs.get("prevLeftClick"))
+                player.attack();
+        }
+
         alienLeftBound = alienRightBound = width / 2;
         for (int row = 0; row < enemy.length; row++) {
             for (int col = 0; col < enemy[row].length; col++) {
                 Alien alien = enemy[row][col];
+                if (alien == null)  {
+                    continue;
+                } 
+                if (alien.checkDelete()) {
+                    enemy[row][col] = null;
+                    continue;
+                }
+
+                for (int laserIndex = 0; laserIndex < lasers.size(); laserIndex++) {
+                    Laser laser = lasers.get(laserIndex);
+                    if (alien.collidesWith(laser)) {
+                        alien.takeDamge();
+                        lasers.remove(laserIndex);
+                    }
+                }
+
                 alienLeftBound = (alien.getX() < alienLeftBound)? alien.getX(): alienLeftBound;
                 alienRightBound = (alien.getX() + alien.getWidth() > alienRightBound)? alien.getX() + alien.getWidth(): alienRightBound;
                 if (alienLeftBound < 100)
@@ -65,6 +87,14 @@ class SceneOne implements Scene {
                 bullets.remove(bulletIndex);
         }
 
+        for (int laserIndex = 0; laserIndex < lasers.size(); laserIndex++) {
+            Laser laser = lasers.get(laserIndex);
+            laser.move();
+
+            if (laser.getY() < -100) 
+                lasers.remove(laserIndex);
+        }
+
         if (hearts.get(hearts.size() - 1).checkDelete())
             hearts.remove(hearts.size() - 1);
     }
@@ -73,8 +103,10 @@ class SceneOne implements Scene {
         player.draw();
 
         for (int row = 0; row < enemy.length; row++) {
-            for (int col = 0; col < enemy[row].length; col++) 
-                enemy[row][col].draw();
+            for (int col = 0; col < enemy[row].length; col++) {
+                if (enemy[row][col] != null)
+                    enemy[row][col].draw();
+            }
         }
 
         for (Bomb bomb: bombs)
@@ -83,6 +115,8 @@ class SceneOne implements Scene {
             bullet.draw();
         for (Heart heart: hearts)
             heart.draw();
+        for (Laser laser: lasers) 
+            laser.draw();
         
         if (player.getHealth() <= 0) {
             gameOverMenu();
@@ -108,7 +142,8 @@ class SceneOne implements Scene {
         hearts = new ArrayList<>();
         bombs = new ArrayList<>();
         bullets = new ArrayList<>();
-        player = new Player(width/2, height - 100, hearts);
+        lasers = new ArrayList<>();
+        player = new Player(width/2, height - 100, hearts, lasers);
         for (int heartIndex = 0; heartIndex < player.getHealth()/2; heartIndex++) {
             hearts.add(new Heart(75 * heartIndex + 50, 50));
         }
