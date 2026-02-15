@@ -17,3 +17,11 @@ void keyReleased() {
   if (keyCode == TAB) keyInputs.put("currTabState", false);
   if (key == ' ') keyInputs.put("space", false);
 }
+
+void mousePressed() {
+  keyInputs.put("currLeftClick", true);
+}
+
+void mouseReleased() {
+  keyInputs.put("currLeftClick", false);
+}

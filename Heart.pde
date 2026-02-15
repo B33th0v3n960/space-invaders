@@ -47,8 +47,10 @@ public class Heart {
             empty = --flickerCounter == 0;
         }
 
-        skins[skinState].resize(HEART_WIDTH, HEART_HEIGHT);
-        image(skins[skinState], x, y);
+        if (skinState < skins.length) {
+            skins[skinState].resize(HEART_WIDTH, HEART_HEIGHT);
+            image(skins[skinState], x, y);
+        }
     }
 
     public boolean checkDelete() {
