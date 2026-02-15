@@ -5,6 +5,8 @@ void keyPressed() {
   if (key == 'd' || key == 'D')  keyInputs.put("right", true);
   if (keyCode == TAB) keyInputs.put("currTabState", true);
   if (key == ' ') keyInputs.put("space", true);
+
+  if (key == 'q' || key == 'Q') exit();
 }
 
 void keyReleased() {
