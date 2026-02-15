@@ -1,8 +1,9 @@
 class Player extends Sprite {
+  private final int FULL_AMMO = 10;
   private int health = 10;
   private int score = 0;
   private int iframe = 0;
-  private int ammunition = 10;
+  private int ammunition = FULL_AMMO;
   private int attackCounter = 0;
   private ArrayList<Heart> hearts;
   private ArrayList<Laser> lasers;
@@ -47,7 +48,7 @@ class Player extends Sprite {
 
   @Override
   public void draw() {
-    if (frameCount % 50 == 0 && ammunition < 5)
+    if (frameCount % 50 == 0 && ammunition < FULL_AMMO)
       ammunition++;
     if (animationFrames != null && animationState < animationFrames.length && animationFrameIndex < animationFrames[0].length) {
       if (iframe > 0) {
@@ -105,10 +106,22 @@ class Player extends Sprite {
   }
 
   public void increaseScore(int increment) {
-    score += increment;
+    if (increment > 0)
+      score += increment;
+  }
+
+  public void decreaseScore(int decrement) {
+    if (decrement > 0 && score > decrement)
+      score -= decrement;
+    else if (score < decrement)
+      score = 0;
   }
 
   public int getScore() {
     return score;
+  }
+
+  public int getAmmunition() {
+    return ammunition;
   }
 }

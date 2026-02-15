@@ -98,7 +98,7 @@ class SceneOne implements Scene {
             laser.move();
 
             if (laser.getY() < -100) {
-                player.increaseScore(-1);
+                player.decreaseScore(1);
                 lasers.remove(laserIndex);
             }
         }
@@ -141,6 +141,7 @@ class SceneOne implements Scene {
         fill(#d8dee9);
         textAlign(RIGHT, TOP);
         text("Player Score: " + player.getScore(), width - 20, 20);
+        text("Player Score: " + player.getAmmunition(), width - 20, 40);
     }
 
     private void gameOverMenu() {
