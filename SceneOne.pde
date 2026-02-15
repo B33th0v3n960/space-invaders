@@ -7,16 +7,18 @@ class SceneOne implements Scene {
     private ArrayList<Laser> lasers;
     private ArrayList<Explosion> explosions;
     private int alienDirection = 1;
-    private float alienSpeed = 5;
+    private float alienSpeed = 10;
     private float alienLeftBound;
     private float alienRightBound;
+    private int scoreDisplay = 0;
+    private int alienCount = 0;
 
     public SceneOne() {
         resetGame();
     }
 
     public void update() {
-        if (player.getHealth() <= 0) 
+        if (player.getHealth() <= 0 || alienCount == 0) 
             return;
 
         if (keyPressed) {
@@ -43,6 +45,7 @@ class SceneOne implements Scene {
                 } 
                 if (alien.checkDelete()) {
                     explosions.add(new Explosion(alien.getX(), alien.getY()));
+                    alienCount--;
                     enemy[row][col] = null;
                     continue;
                 }
@@ -136,6 +139,10 @@ class SceneOne implements Scene {
         
         if (player.getHealth() <= 0) {
             gameOverMenu();
+            return;
+        } else if (alienCount <= 0) {
+            roundOverMenu();
+            return;
         }
 
         fill(#d8dee9);
@@ -159,20 +166,40 @@ class SceneOne implements Scene {
         }
     }
 
+    private void roundOverMenu() {
+        fill(#e5e9f0);
+        rect(width/2 , height/2, 720, 480, 20);
+        textAlign(CENTER);
+        textSize(48);
+        fill(#2e3440);
+        text("You've won!!!", width/2, height/2 - 100);
+        text("Score: " + scoreDisplay, width/2, height/2);
+        text("Presss <SPACE> to play again.", width/2, height/2 + 100);
+        if (scoreDisplay < player.getScore())
+            scoreDisplay++;
+
+        if (keyPressed) {
+            if (keyInputs.get("space"))
+                resetGame();
+        }
+    }
+
     private void resetGame() {
         hearts = new ArrayList<>();
         bombs = new ArrayList<>();
         bullets = new ArrayList<>();
         lasers = new ArrayList<>();
         explosions = new ArrayList<>();
+        alienCount = 0;
         player = new Player(width/2, height - 100, hearts, lasers);
         for (int heartIndex = 0; heartIndex < player.getHealth()/2; heartIndex++) {
             hearts.add(new Heart(75 * heartIndex + 50, 50));
         }
 
-        enemy = new Alien[4][5];
+        enemy = new Alien[2][4];
         for (int row = 0; row < enemy.length; row++) {
             for (int col = 0; col < enemy[row].length; col++) {
+                alienCount++;
                 float xCoordinate = width/2 - 500 + col * 200;
                 float yCoordinate = 100 + row * 200;
                 if (random(1,100) > 50)
