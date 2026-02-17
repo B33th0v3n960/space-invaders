@@ -6,8 +6,9 @@ class SceneOne implements Scene {
     private ArrayList<Heart> hearts;
     private ArrayList<Laser> lasers;
     private ArrayList<Explosion> explosions;
+
     private int alienDirection = 1;
-    private float alienSpeed = 10;
+    private float alienSpeed = 20;
     private float alienLeftBound;
     private float alienRightBound;
     private int scoreDisplay = 0;
@@ -61,15 +62,15 @@ class SceneOne implements Scene {
 
                 alienLeftBound = (alien.getX() < alienLeftBound)? alien.getX(): alienLeftBound;
                 alienRightBound = (alien.getX() + alien.getWidth() > alienRightBound)? alien.getX() + alien.getWidth(): alienRightBound;
-                if (alienLeftBound < 100)
-                    alienDirection = 1;
-                if (alienRightBound > width - 100) 
-                    alienDirection = -1;
                 alien.move(alienDirection * alienSpeed, 0);
                 if (random(1, 100) > 95)
                     alien.attack();
             }
         }
+        if (alienLeftBound < 100)
+            alienDirection = 1;
+        if (alienRightBound > width - 100) 
+            alienDirection = -1;
 
         for (int bombIndex = 0; bombIndex < bombs.size(); bombIndex++) {
             Bomb bomb = bombs.get(bombIndex);
@@ -148,7 +149,7 @@ class SceneOne implements Scene {
         fill(#d8dee9);
         textAlign(RIGHT, TOP);
         text("Player Score: " + player.getScore(), width - 20, 20);
-        text("Player Score: " + player.getAmmunition(), width - 20, 40);
+        text("Player Ammo: " + player.getAmmunition(), width - 20, 40);
     }
 
     private void gameOverMenu() {
@@ -196,7 +197,7 @@ class SceneOne implements Scene {
             hearts.add(new Heart(75 * heartIndex + 50, 50));
         }
 
-        enemy = new Alien[2][4];
+        enemy = new Alien[4][6];
         for (int row = 0; row < enemy.length; row++) {
             for (int col = 0; col < enemy[row].length; col++) {
                 alienCount++;
