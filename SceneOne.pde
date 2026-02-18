@@ -6,9 +6,10 @@ class SceneOne implements Scene {
     private ArrayList<Heart> hearts;
     private ArrayList<Laser> lasers;
     private ArrayList<Explosion> explosions;
+    private ArrayList<PowerUp> powerUps;
 
     private int alienDirection = 1;
-    private float alienSpeed = 20;
+    private float alienSpeed = 10;
     private float alienLeftBound;
     private float alienRightBound;
     private int scoreDisplay = 0;
@@ -19,10 +20,10 @@ class SceneOne implements Scene {
     }
 
     public void update() {
-        if (player.getHealth() <= 0 || alienCount == 0) 
+        if ((player.getHealth() <= 0 || alienCount == 0) && explosions.size() == 0 && powerUps.size() == 0 && bombs.size() == 0)
             return;
 
-        if (keyPressed) {
+        if (keyPressed && player.getHealth() > 0 && alienCount > 0) {
             if (keyInputs.get("left"))
                 player.move(-5, 0);
             if (keyInputs.get("right"))
@@ -45,6 +46,10 @@ class SceneOne implements Scene {
                     continue;
                 } 
                 if (alien.checkDelete()) {
+                    PowerUp boost = new PowerUp(alien.getX(), alien.getY());
+                    boost.setVelocity(0,5);
+                    powerUps.add(boost);
+
                     explosions.add(new Explosion(alien.getX(), alien.getY()));
                     alienCount--;
                     enemy[row][col] = null;
@@ -54,8 +59,8 @@ class SceneOne implements Scene {
                 for (int laserIndex = 0; laserIndex < lasers.size(); laserIndex++) {
                     Laser laser = lasers.get(laserIndex);
                     if (alien.collidesWith(laser)) {
-                        alien.takeDamge();
-                        player.increaseScore(5);
+                        alien.takeDamge(laser.getDamage());
+                        player.increaseScore(laser.getDamage() * 5);
                         lasers.remove(laserIndex);
                     }
                 }
@@ -79,7 +84,7 @@ class SceneOne implements Scene {
             if (bomb.collidesWith(player)) 
                 bomb.trigger();
             
-            if (bomb.isExploding && player.collidesWith(bomb))
+            if (bomb.isExploding && player.collidesWith(bomb) && player.health > 0)
                 player.takeDoubleDamage();
 
             if (bomb.getY() > height + 200 || bomb.checkDeleted())
@@ -90,7 +95,7 @@ class SceneOne implements Scene {
             Bullet bullet = bullets.get(bulletIndex);
             bullet.move();
 
-            if (player.collidesWith(bullet))
+            if (player.collidesWith(bullet) && player.health > 0)
                 player.takeDamge();
 
             if (bullet.getY() > height + 200) 
@@ -107,14 +112,28 @@ class SceneOne implements Scene {
             }
         }
 
+        for (int powerUpIndex = 0; powerUpIndex < powerUps.size(); powerUpIndex++) {
+            PowerUp powerUp = powerUps.get(powerUpIndex);
+            powerUp.move();
+
+            if (player.collidesWith(powerUp)) {
+                player.increaseScore(5);
+                player.boost(powerUp.getType());
+                powerUps.remove(powerUpIndex);
+            } else if (powerUp.getY() > height + 100) {
+                powerUps.remove(powerUpIndex);
+            }
+        }
+
         for (int explosionIndex = 0; explosionIndex < explosions.size(); explosionIndex++) {
             Explosion explosion = explosions.get(explosionIndex);
             if (explosion.checkDeleted())
                 explosions.remove(explosionIndex);
         }
-
-        if (hearts.get(hearts.size() - 1).checkDelete())
-            hearts.remove(hearts.size() - 1);
+        if (hearts.size() > 0) {
+            if (hearts.get(hearts.size() - 1).checkDelete())
+                hearts.remove(hearts.size() - 1);
+        }
     }
     
     public void draw() {
@@ -127,6 +146,8 @@ class SceneOne implements Scene {
             }
         }
 
+        for (PowerUp powerUp: powerUps)
+            powerUp.draw();
         for (Bomb bomb: bombs)
             bomb.draw();
         for (Bullet bullet: bullets)
@@ -153,6 +174,8 @@ class SceneOne implements Scene {
     }
 
     private void gameOverMenu() {
+        if (hearts.size() > 0)
+            hearts.remove(hearts.size() -1);
         fill(#e5e9f0);
         rect(width/2 , height/2, 720, 480, 20);
         textAlign(CENTER);
@@ -177,7 +200,7 @@ class SceneOne implements Scene {
         text("Score: " + scoreDisplay, width/2, height/2);
         text("Presss <SPACE> to play again.", width/2, height/2 + 100);
         if (scoreDisplay < player.getScore())
-            scoreDisplay++;
+            scoreDisplay+= 5;
 
         if (keyPressed) {
             if (keyInputs.get("space"))
@@ -191,6 +214,8 @@ class SceneOne implements Scene {
         bullets = new ArrayList<>();
         lasers = new ArrayList<>();
         explosions = new ArrayList<>();
+        powerUps = new ArrayList<>();
+
         alienCount = 0;
         player = new Player(width/2, height - 100, hearts, lasers);
         for (int heartIndex = 0; heartIndex < player.getHealth()/2; heartIndex++) {

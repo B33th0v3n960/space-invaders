@@ -1,15 +1,19 @@
-class Laser extends Sprite {
+public class PowerUp extends Sprite {
   private float velocity[] = {0.0, 0.0};
-  private int damage = 1;
+  private int type = 0;
 
-  public Laser(float x, float y) {
+  public PowerUp(float x, float y) {
     super(x, y, 100, 100, ELLIPSE);
     spriteWidth = 100;
     spriteHeight = 100;
     this.x = x;
     this.y = y;
+    this.type = int(random(0,3));
+    this.animationFrameIndex = type;
     String assets[][] = {{
-      "./assets/Laser/Laser.png",
+      "./assets/PowerUp/PowerUp1.png",
+      "./assets/PowerUp/PowerUp2.png",
+      "./assets/PowerUp/PowerUp3.png",
     }};
 
     loadFrames(assets);
@@ -23,11 +27,7 @@ class Laser extends Sprite {
       super.move(velocity[0], velocity[1]);
   }
 
-  public void setDamage(int damage) {
-    this.damage = damage;
-  }
-  
-  public int getDamage() {
-    return damage;
+  public int getType() {
+    return type;
   }
 }

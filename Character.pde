@@ -1,12 +1,21 @@
 class Player extends Sprite {
-  private final int FULL_AMMO = 10;
   private int health = 10;
   private int score = 0;
   private int iframe = 0;
+
+  private final int FULL_AMMO = 10;
   private int ammunition = FULL_AMMO;
   private int attackCounter = 0;
+  private int damage = 1;
+
   private ArrayList<Heart> hearts;
   private ArrayList<Laser> lasers;
+
+  private int boostCounter = 0;
+  private int boostMode = 0;
+  private int ammoBoost = 1;
+  private int speedBoost = 1;
+  private int damageBoost = 1;
 
   public Player(float x, float y, ArrayList<Heart> hearts, ArrayList<Laser> lasers) {
     super(x, y, 100, 100, RECT);
@@ -48,7 +57,16 @@ class Player extends Sprite {
 
   @Override
   public void draw() {
-    if (frameCount % 50 == 0 && ammunition < FULL_AMMO)
+    if (boostCounter > 0) {
+      boostCounter--;
+      animationState = boostMode;
+    } else {
+      animationState = boostMode = 0;
+      speedBoost = 1;
+      ammoBoost = 1;
+      ammunition = (ammunition > FULL_AMMO)? FULL_AMMO: ammunition;
+    }
+    if (frameCount % 50 == 0 && ammunition < ammoBoost * FULL_AMMO)
       ammunition++;
     if (animationFrames != null && animationState < animationFrames.length && animationFrameIndex < animationFrames[0].length) {
       if (iframe > 0) {
@@ -67,6 +85,11 @@ class Player extends Sprite {
     }
   }
 
+  @Override
+  public void move(float dx, float dy) {
+    super.move(speedBoost * dx, speedBoost * dy);
+  }
+
   public void startAttack() {
     attackCounter = 0;
   }
@@ -75,6 +98,7 @@ class Player extends Sprite {
     if (ammunition > 0 && attackCounter++ % 10 == 0) {
       Laser laser = new Laser(x, y - 100);
       laser.setVelocity(0, -20);
+      laser.setDamage(damage * damageBoost);
       lasers.add(laser);
       ammunition--;
     }
@@ -123,5 +147,28 @@ class Player extends Sprite {
 
   public int getAmmunition() {
     return ammunition;
+  }
+
+  public void boost(int boostType) {
+    boostCounter = 600;
+    boostMode = boostType % 3;
+    switch (boostType) {
+      case 0:
+        ammoBoost = 2;
+        ammunition += 10;
+        speedBoost = 1;
+        damageBoost = 1;
+        break;
+      case 1:
+        speedBoost = 4;
+        damageBoost = 1;
+        ammoBoost = 1;
+        break;
+      case 2:
+        damageBoost = 3;
+        speedBoost = 1;
+        ammoBoost = 1;
+      default:
+    }
   }
 }

@@ -29,7 +29,14 @@ abstract class Alien extends Sprite {
 
     public void takeDamge() {
         damageFlicker = 5;
-        if (--health == 0) 
+        if (--health <= 0) 
+            delete = true;
+    }
+
+    public void takeDamge(int damage) {
+        damageFlicker = 5;
+        health -= damage;
+        if (health <= 0) 
             delete = true;
     }
 
