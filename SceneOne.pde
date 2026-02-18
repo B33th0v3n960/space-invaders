@@ -46,9 +46,11 @@ class SceneOne implements Scene {
                     continue;
                 } 
                 if (alien.checkDelete()) {
-                    PowerUp boost = new PowerUp(alien.getX(), alien.getY());
-                    boost.setVelocity(0,5);
-                    powerUps.add(boost);
+                    if (random(0,100) > 75) {
+                        PowerUp boost = new PowerUp(alien.getX(), alien.getY());
+                        boost.setVelocity(0,5);
+                        powerUps.add(boost);
+                    }
 
                     explosions.add(new Explosion(alien.getX(), alien.getY()));
                     alienCount--;
@@ -196,15 +198,17 @@ class SceneOne implements Scene {
         textAlign(CENTER);
         textSize(48);
         fill(#2e3440);
-        text("You've won!!!", width/2, height/2 - 100);
+        text("Round One Over!!!", width/2, height/2 - 100);
         text("Score: " + scoreDisplay, width/2, height/2);
-        text("Presss <SPACE> to play again.", width/2, height/2 + 100);
+        text("Presss <SPACE> to get to \n the next level.", width/2, height/2 + 100);
         if (scoreDisplay < player.getScore())
             scoreDisplay+= 5;
 
         if (keyPressed) {
-            if (keyInputs.get("space"))
-                resetGame();
+            if (keyInputs.get("space")) {
+                sceneNumber = 1;
+                // resetGame();
+            }
         }
     }
 
@@ -222,7 +226,7 @@ class SceneOne implements Scene {
             hearts.add(new Heart(75 * heartIndex + 50, 50));
         }
 
-        enemy = new Alien[4][6];
+        enemy = new Alien[2][2];
         for (int row = 0; row < enemy.length; row++) {
             for (int col = 0; col < enemy[row].length; col++) {
                 alienCount++;
