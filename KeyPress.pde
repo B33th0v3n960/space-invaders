@@ -19,7 +19,8 @@ void keyReleased() {
 }
 
 void mousePressed() {
-  keyInputs.put("currLeftClick", true);
+  if (mouseButton == LEFT)
+    keyInputs.put("currLeftClick", true);
 }
 
 void mouseReleased() {

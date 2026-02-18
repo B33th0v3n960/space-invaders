@@ -2,6 +2,7 @@ import java.util.HashMap;
 import java.util.ArrayList;
 
 HashMap<String, Boolean> keyInputs = new HashMap<>();
+public int prevSceneNumber = 0;
 public int sceneNumber = 0;
 public Scene currentScene;
 
@@ -34,9 +35,24 @@ void draw() {
   background(#2e3440);
   textSize(24);
 
-  if (keyInputs.get("currTabState") && !keyInputs.get("prevTabState")) {
-    sceneNumber = (++sceneNumber) % 2;
+  currentScene.update();
+  currentScene.draw();
+  System.out.println(sceneNumber);
 
+  if (keyInputs.get("currTabState") && !keyInputs.get("prevTabState") ) {
+    sceneNumber = (++sceneNumber) % 2;
+    switch (sceneNumber) {
+      case 0:
+        currentScene = new SceneOne();
+        break;
+      case 1:
+        currentScene = new SceneTwo();
+        break;
+      default: 
+        System.err.println("Could not find scene");
+        break;
+    }
+  } else if (sceneNumber != prevSceneNumber) {
     switch (sceneNumber) {
       case 0:
         currentScene = new SceneOne();
@@ -50,9 +66,7 @@ void draw() {
     }
   }
 
-  currentScene.update();
-  currentScene.draw();
-
+  prevSceneNumber = sceneNumber;
   keyInputs.put("prevTabState", keyInputs.get("currTabState"));
   keyInputs.put("prevLeftClick", keyInputs.get("currLeftClick"));
 }
