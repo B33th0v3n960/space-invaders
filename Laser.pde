@@ -3,7 +3,7 @@ class Laser extends Sprite {
   private int damage = 1;
 
   public Laser(float x, float y) {
-    super(x, y, 100, 100, ELLIPSE);
+    super(x, y, 20, 100, ELLIPSE);
     spriteWidth = 100;
     spriteHeight = 100;
     this.x = x;

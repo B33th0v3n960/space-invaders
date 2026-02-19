@@ -24,9 +24,9 @@ class SceneOne implements Scene {
             return;
 
         if (keyPressed && player.getHealth() > 0 && alienCount > 0) {
-            if (keyInputs.get("left"))
+            if (keyInputs.get("left") && player.getX() > player.getWidth()/2)
                 player.move(-5, 0);
-            if (keyInputs.get("right"))
+            if (keyInputs.get("right") && player.getX() < width - player.getWidth()/2)
                 player.move(5,0);
         }
 

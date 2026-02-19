@@ -5,6 +5,7 @@ HashMap<String, Boolean> keyInputs = new HashMap<>();
 public int prevSceneNumber = 0;
 public int sceneNumber = 0;
 public Scene currentScene;
+public Aliens parent = this;
 
 void setup() {
   size(2560, 1440, P2D);
@@ -37,7 +38,6 @@ void draw() {
 
   currentScene.update();
   currentScene.draw();
-  System.out.println(sceneNumber);
 
   if (keyInputs.get("currTabState") && !keyInputs.get("prevTabState") ) {
     sceneNumber = (++sceneNumber) % 2;
