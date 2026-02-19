@@ -35,6 +35,9 @@ public class Shield {
     }
 
     public boolean collidesWith(Bullet bullet) {
+        if (bullet == null)
+            return false;
+
         for (int row = 0; row < shieldUnits.length; row++) {
             for (int col = 0; col < shieldUnits[row].length; col++) {
                 if (shieldUnits[row][col] != null)  {
@@ -48,7 +51,29 @@ public class Shield {
         return false;
     }
 
+    public boolean collidesWith(Bomb bomb) {
+        if (bomb == null) 
+            return false;
+        boolean result = false;
+        for (int row = 0; row < shieldUnits.length; row++) {
+            for (int col = 0; col < shieldUnits[row].length; col++) {
+                if (shieldUnits[row][col] != null)  {
+                    if (shieldUnits[row][col].collidesWith(bomb))
+                        result = true;
+
+                    if (shieldUnits[row][col].collidesWith(bomb) && bomb.checkIfExploding()) {
+                        shieldUnits[row][col] = null;
+                    } 
+                }
+            }
+        }
+        return result;
+    }
+
     public boolean collidesWith(Sprite projectile) {
+        if (projectile == null) 
+            return false;
+
         for (int row = 0; row < shieldUnits.length; row++) {
             for (int col = 0; col < shieldUnits[row].length; col++) {
                 if (shieldUnits[row][col] != null)  {

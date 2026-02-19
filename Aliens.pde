@@ -1,5 +1,6 @@
 import java.util.HashMap;
 import java.util.ArrayList;
+import processing.sound.*;
 
 HashMap<String, Boolean> keyInputs = new HashMap<>();
 public int prevSceneNumber = 0;
@@ -40,13 +41,16 @@ void draw() {
   currentScene.draw();
 
   if (keyInputs.get("currTabState") && !keyInputs.get("prevTabState") ) {
-    sceneNumber = (++sceneNumber) % 2;
+    sceneNumber = (++sceneNumber) % 3;
     switch (sceneNumber) {
       case 0:
         currentScene = new SceneOne();
         break;
       case 1:
         currentScene = new SceneTwo();
+        break;
+      case 2:
+        currentScene = new SceneThree();
         break;
       default: 
         System.err.println("Could not find scene");
@@ -59,6 +63,9 @@ void draw() {
         break;
       case 1:
         currentScene = new SceneTwo();
+        break;
+      case 2:
+        currentScene = new SceneThree();
         break;
       default: 
         System.err.println("Could not find scene");

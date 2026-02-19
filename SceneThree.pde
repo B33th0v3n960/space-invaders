@@ -1,7 +1,6 @@
-class SceneTwo implements Scene {
+class SceneThree implements Scene {
     private Player player;
     private Alien[][] enemy;
-    private Shield[] shields;
     private ArrayList<Bomb> bombs;
     private ArrayList<Bullet> bullets;
     private ArrayList<Heart> hearts;
@@ -16,7 +15,7 @@ class SceneTwo implements Scene {
     private int scoreDisplay = 0;
     private int alienCount = 0;
 
-    public SceneTwo() {
+    public SceneThree() {
         resetGame();
     }
 
@@ -25,7 +24,7 @@ class SceneTwo implements Scene {
             return;
 
         if (keyPressed && player.getHealth() > 0 && alienCount > 0) {
-            if (keyInputs.get("left") && player.getX() > player.getWidth() / 2)
+            if (keyInputs.get("left") && player.getX() > player.getWidth()/2)
                 player.move(-5, 0);
             if (keyInputs.get("right") && player.getX() < width - player.getWidth()/2)
                 player.move(5,0);
@@ -47,9 +46,11 @@ class SceneTwo implements Scene {
                     continue;
                 } 
                 if (alien.checkDelete()) {
-                    PowerUp boost = new PowerUp(alien.getX(), alien.getY());
-                    boost.setVelocity(0,5);
-                    powerUps.add(boost);
+                    if (random(0,100) > 75) {
+                        PowerUp boost = new PowerUp(alien.getX(), alien.getY());
+                        boost.setVelocity(0,5);
+                        powerUps.add(boost);
+                    }
 
                     explosions.add(new Explosion(alien.getX(), alien.getY()));
                     alienCount--;
@@ -59,7 +60,7 @@ class SceneTwo implements Scene {
 
                 for (int laserIndex = 0; laserIndex < lasers.size(); laserIndex++) {
                     Laser laser = lasers.get(laserIndex);
-                    if (alien.collidesWith(laser)) {
+                    if (alien.collidesWith(laser) && laser.getVariant() == 0) {
                         alien.takeDamge(laser.getDamage());
                         player.increaseScore(laser.getDamage() * 5);
                         lasers.remove(laserIndex);
@@ -84,12 +85,6 @@ class SceneTwo implements Scene {
 
             if (bomb.collidesWith(player)) 
                 bomb.trigger();
-
-            for (int shieldIndex = 0; shieldIndex < shields.length; shieldIndex++) {
-                Shield shield = shields[shieldIndex];
-                if (shield.collidesWith(bomb))
-                    bomb.trigger();
-            }
             
             if (bomb.isExploding && player.collidesWith(bomb) && player.health > 0)
                 player.takeDoubleDamage();
@@ -107,34 +102,22 @@ class SceneTwo implements Scene {
 
             if (bullet.getY() > height + 200) 
                 bullets.remove(bulletIndex);
-
-            for (int shieldIndex = 0; shieldIndex < shields.length; shieldIndex++) {
-                Shield shield = shields[shieldIndex];
-                if (shield.collidesWith(bullet)) {
-                    explosions.add( new Explosion(bullet.getX(), bullet.getY()));
-                    bullets.remove(bulletIndex);
-                    continue;
-                } 
-            }
         }
 
         for (int laserIndex = 0; laserIndex < lasers.size(); laserIndex++) {
             Laser laser = lasers.get(laserIndex);
             laser.move();
 
+            if (player.collidesWith(laser) && laser.getVariant() == 1) {
+                player.takeDamge();
+            }
+
             if (laser.getY() < -100) {
                 player.decreaseScore(1);
                 lasers.remove(laserIndex);
             }
-
-            for (int shieldIndex = 0; shieldIndex < shields.length; shieldIndex++) {
-                Shield shield = shields[shieldIndex];
-                if (shield.collidesWith(laser)) {
-                    explosions.add( new Explosion(laser.getX(), laser.getY()));
-                    lasers.remove(laserIndex);
-                    continue;
-                } 
-            }
+            if (laser.getY() > height + 100 && laser.getVariant() == 1) 
+                lasers.remove(laserIndex);
         }
 
         for (int powerUpIndex = 0; powerUpIndex < powerUps.size(); powerUpIndex++) {
@@ -162,10 +145,8 @@ class SceneTwo implements Scene {
     }
     
     public void draw() {
-        for (Shield shield: shields)
-            shield.draw();
-
         player.draw();
+
         for (int row = 0; row < enemy.length; row++) {
             for (int col = 0; col < enemy[row].length; col++) {
                 if (enemy[row][col] != null)
@@ -223,16 +204,17 @@ class SceneTwo implements Scene {
         textAlign(CENTER);
         textSize(48);
         fill(#2e3440);
-        text("Round Two Over!!!", width/2, height/2 - 100);
+        text("Round One Over!!!", width/2, height/2 - 100);
         text("Score: " + scoreDisplay, width/2, height/2);
         text("Presss <SPACE> to get to \n the next level.", width/2, height/2 + 100);
         if (scoreDisplay < player.getScore())
             scoreDisplay+= 5;
 
         if (keyPressed) {
-            if (keyInputs.get("space"))
-                sceneNumber = 2;
+            if (keyInputs.get("space")) {
+                sceneNumber = 1;
                 // resetGame();
+            }
         }
     }
 
@@ -243,10 +225,6 @@ class SceneTwo implements Scene {
         lasers = new ArrayList<>();
         explosions = new ArrayList<>();
         powerUps = new ArrayList<>();
-        shields = new Shield[3];
-        for (int shieldIndex = 0; shieldIndex < shields.length; shieldIndex++) {
-            shields[shieldIndex] = new Shield(200 + 900 * shieldIndex, height - 400);
-        }
 
         alienCount = 0;
         player = new Player(width/2, height - 100, hearts, lasers);
@@ -254,16 +232,19 @@ class SceneTwo implements Scene {
             hearts.add(new Heart(75 * heartIndex + 50, 50));
         }
 
-        enemy = new Alien[4][4];
+        enemy = new Alien[3][4];
         for (int row = 0; row < enemy.length; row++) {
             for (int col = 0; col < enemy[row].length; col++) {
                 alienCount++;
                 float xCoordinate = width/2 - 500 + col * 200;
                 float yCoordinate = 100 + row * 200;
-                if (random(1,100) > 50)
+                float spawnChoice = random(1, 100);
+                if (spawnChoice < 30)
                     enemy[row][col] = new AlienOne(xCoordinate, yCoordinate, bombs);
-                else 
+                else if (spawnChoice < 60)
                     enemy[row][col] = new AlienTwo(xCoordinate, yCoordinate, bullets);
+                else 
+                    enemy[row][col] = new AlienThree(xCoordinate, yCoordinate, lasers);
             } 
         }
     }

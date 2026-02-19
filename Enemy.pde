@@ -113,3 +113,35 @@ public class AlienTwo extends Alien {
         }
     }
 }
+
+public class AlienThree extends Alien {
+    private ArrayList<Laser> lasers;
+    public AlienThree(float x, float y, ArrayList<Laser> laser) {
+        super(x, y);
+        this.health = 5;
+        try {
+            if (laser == null) 
+                throw new NullPointerException();
+            this.lasers = laser;
+        } catch (NullPointerException exception) {
+            exception.printStackTrace();
+        }
+
+        String assets[][] = {
+            {
+                "./assets/Aliens/Alien5.png",
+                "./assets/Aliens/Alien6.png",
+            }
+        };
+        loadFrames(assets);
+    }
+
+    @Override 
+    public void attack() {
+        if (frameCount % 5 == 0 && damageFlicker == 0) {
+            Laser laser = new Laser(x, y + 100, 1);
+            laser.setVelocity(0, 20);
+            lasers.add(laser);
+        }
+    }
+}
