@@ -201,8 +201,11 @@ class SceneOne implements Scene {
         text("Round One Over!!!", width/2, height/2 - 100);
         text("Score: " + scoreDisplay, width/2, height/2);
         text("Presss <SPACE> to get to \n the next level.", width/2, height/2 + 100);
-        if (scoreDisplay < player.getScore())
+        if (scoreDisplay + 5 < player.getScore())
             scoreDisplay+= 5;
+        else if (scoreDisplay < player.getScore())
+            scoreDisplay+= 1;
+
 
         if (keyPressed) {
             if (keyInputs.get("space")) {

@@ -41,7 +41,7 @@ void draw() {
   currentScene.draw();
 
   if (keyInputs.get("currTabState") && !keyInputs.get("prevTabState") ) {
-    sceneNumber = (++sceneNumber) % 3;
+    sceneNumber = (++sceneNumber) % 4;
     switch (sceneNumber) {
       case 0:
         currentScene = new SceneOne();
@@ -51,6 +51,9 @@ void draw() {
         break;
       case 2:
         currentScene = new SceneThree();
+        break;
+      case 3:
+        currentScene = new SceneFour();
         break;
       default: 
         System.err.println("Could not find scene");
@@ -66,6 +69,9 @@ void draw() {
         break;
       case 2:
         currentScene = new SceneThree();
+        break;
+      case 3:
+        currentScene = new SceneFour();
         break;
       default: 
         System.err.println("Could not find scene");
